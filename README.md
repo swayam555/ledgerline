@@ -100,6 +100,10 @@ Example event:
 
 Migrations are in `src/ledgerline/migrations`. To create a new one, run `uv run alembic revision --autogenerate -m "…"`.
 
+## Feature map
+
+[FEATURES.md](FEATURES.md) maps each feature of the reference reconciliation service to where Ledgerline implements it and how it was tested.
+
 ## Tests
 
 ```bash
