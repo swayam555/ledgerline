@@ -1,0 +1,33 @@
+name: ledgerline
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ledgerline
+      POSTGRES_PASSWORD: ${LL_DB_PASSWORD:-ledgerline}
+      POSTGRES_DB: ledgerline
+    ports:
+      - "127.0.0.1:${LL_DB_PORT:-5436}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ledgerline -d ledgerline"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    environment:
+      LEDGERLINE_DATABASE_URL: postgresql://ledgerline:${LL_DB_PASSWORD:-ledgerline}@postgres:5432/ledgerline
+      LEDGERLINE_STUCK_HOURS: ${LEDGERLINE_STUCK_HOURS:-48}
+    ports:
+      - "${LL_HTTP_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

@@ -1,0 +1,7 @@
+.venv
+**/__pycache__
+*.db*
+sample_events.json
+.pytest_cache
+tests
+.git

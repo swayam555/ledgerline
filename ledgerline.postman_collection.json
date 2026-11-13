@@ -1,0 +1,245 @@
+{
+  "info": {
+    "name": "Ledgerline",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "Ingest event",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events"
+          ]
+        },
+        "description": "Send it twice: the second response has duplicate=true and changes nothing.",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": \"evt_demo_001\",\n  \"event_type\": \"payment_initiated\",\n  \"transaction_id\": \"txn_demo_001\",\n  \"merchant_id\": \"mer_chai\",\n  \"merchant_name\": \"Chai Sutra\",\n  \"amount\": 1499.5,\n  \"currency\": \"INR\",\n  \"timestamp\": \"2026-11-12T09:30:00+05:30\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Ingest settlement",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events"
+          ]
+        },
+        "description": "",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event_id\": \"evt_demo_002\",\n  \"event_type\": \"settled\",\n  \"transaction_id\": \"txn_demo_001\",\n  \"merchant_id\": \"mer_chai\",\n  \"merchant_name\": \"Chai Sutra\",\n  \"amount\": 1499.5,\n  \"currency\": \"INR\",\n  \"timestamp\": \"2026-11-13T09:30:00+05:30\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Ingest batch",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/events/batch",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "events",
+            "batch"
+          ]
+        },
+        "description": "Valid events are applied; invalid ones are listed in `rejected`.",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"event_id\": \"evt_demo_003\",\n    \"event_type\": \"payment_initiated\",\n    \"transaction_id\": \"txn_demo_002\",\n    \"merchant_id\": \"mer_chai\",\n    \"merchant_name\": \"Chai Sutra\",\n    \"amount\": 1499.5,\n    \"currency\": \"INR\",\n    \"timestamp\": \"2026-11-12T09:30:00+05:30\"\n  },\n  {\n    \"event_id\": \"broken\"\n  }\n]"
+        }
+      }
+    },
+    {
+      "name": "List transactions",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/transactions?merchant_id=mer_chai&status=settled&sort_by=amount&sort_order=desc&skip=0&limit=20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "transactions"
+          ],
+          "query": [
+            {
+              "key": "merchant_id",
+              "value": "mer_chai"
+            },
+            {
+              "key": "status",
+              "value": "settled"
+            },
+            {
+              "key": "sort_by",
+              "value": "amount"
+            },
+            {
+              "key": "sort_order",
+              "value": "desc"
+            },
+            {
+              "key": "skip",
+              "value": "0"
+            },
+            {
+              "key": "limit",
+              "value": "20"
+            }
+          ]
+        },
+        "description": "",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "\"Total count is in the X-Total-Count header.\""
+        }
+      }
+    },
+    {
+      "name": "Get transaction",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/transactions/txn_demo_001",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "transactions",
+            "txn_demo_001"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "Merchants",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/merchants",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "merchants"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "Reconciliation summary",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/reconciliation/summary",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reconciliation",
+            "summary"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "Discrepancies",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/reconciliation/discrepancies",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reconciliation",
+            "discrepancies"
+          ]
+        },
+        "description": ""
+      }
+    },
+    {
+      "name": "Overview",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/reconciliation/overview",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "reconciliation",
+            "overview"
+          ]
+        },
+        "description": ""
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    }
+  ]
+}

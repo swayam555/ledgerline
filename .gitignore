@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.db
+*.db-journal
+sample_events.json
+.pytest_cache/
+.env

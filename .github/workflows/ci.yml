@@ -1,0 +1,26 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: ledgerline, POSTGRES_PASSWORD: ledgerline, POSTGRES_DB: ledgerline_test }
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U ledgerline" --health-interval 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - name: Tests on SQLite
+        run: uv run pytest -q
+      - name: Tests on Postgres
+        run: uv run pytest -q
+        env: { LEDGERLINE_TEST_DATABASE_URL: "postgresql://ledgerline:ledgerline@localhost:5432/ledgerline_test" }
+      - name: Docker image builds and serves
+        run: |
+          docker compose up -d --build --wait
+          curl -fsS localhost:8000/health
+          uv run ledgerline-generate --scale 0.05 --seed 1 && uv run ledgerline-seed --url http://127.0.0.1:8000
+          curl -fsS localhost:8000/reconciliation/discrepancies > /dev/null
